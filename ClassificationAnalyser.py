@@ -226,6 +226,66 @@ class ClassificationAnalyser:
         # return the parameters
         return best_params
     
+    def XGBoost(self):
+        from xgboost import XGBClassifier
+        
+        # Create a XGBoost model instance
+        model = XGBClassifier()
+        
+        # Define parameters for grid search
+        XGBoost_parameters = [{'n_estimators': [100, 200, 300], 'learning_rate': [0.05, 0.1, 0.2], 'max_depth': [3, 4, 5]}]
+        
+        # Perform grid search to find the best parameters
+        best_params, best_accuracy = self.grid_search(model, XGBoost_parameters)
+        
+        # Reassign the model instance with the best parameters found
+        model = XGBClassifier(**best_params)
+        
+        # Perform k-fold cross validation
+        accuracy, std_dev = self.k_fold_cross_validation(model)
+        
+        # Store the results
+        self.result['XGBoost'] = (accuracy, std_dev, best_params)
+        
+        # Print the results
+        print('XGBoost')
+        print('Accuracy: {:.2f} %'.format(accuracy*100))
+        print('Standard Deviation: {:.2f} %'.format(std_dev*100))
+        print('Best Parameters:', best_params)
+        
+        # return the parameters
+        return best_params
+    
+    def CatBoost(self):
+        from catboost import CatBoostClassifier
+        
+        # Create a CatBoost model instance
+        model = CatBoostClassifier()
+        
+        # Define parameters for grid search
+        CatBoost_parameters = [{'iterations': [100, 200, 300], 'learning_rate': [0.05, 0.1, 0.2], 'depth': [3, 4, 5]}]
+        
+        # Perform grid search to find the best parameters
+        best_params, best_accuracy = self.grid_search(model, CatBoost_parameters)
+        
+        # Reassign the model instance with the best parameters found
+        model = CatBoostClassifier(**best_params)
+        
+        # Perform k-fold cross validation
+        accuracy, std_dev = self.k_fold_cross_validation(model)
+        
+        # Store the results
+        self.result['CatBoost'] = (accuracy, std_dev, best_params)
+        
+        # Print the results
+        print('CatBoost')
+        print('Accuracy: {:.2f} %'.format(accuracy*100))
+        print('Standard Deviation: {:.2f} %'.format(std_dev*100))
+        print('Best Parameters:', best_params)
+        
+        # return the parameters
+        return best_params
+    
     def analyze(self):
         self.logistic_regression()
         self.k_nearest_neighbours()
@@ -233,6 +293,8 @@ class ClassificationAnalyser:
         self.naive()
         self.decision_tree()
         self.random_forest()
+        self.XGBoost()
+        self.CatBoost()
         from pprint import pprint
         pprint(self.result)
         
@@ -243,5 +305,5 @@ class ClassificationAnalyser:
         plt.xlabel('Accuracy')
         plt.ylabel('Standard Deviation')
         plt.legend()
-        plt.savefig("classification_result.png")
+        plt.show()
     
