@@ -320,4 +320,4 @@ class RegressionAnalyser:
         plt.xlabel('Mean R-squared Score')
         plt.ylabel('Standard Deviation of R-squared Score')
         plt.legend()
-        plt.savefig('result.png')
+        plt.savefig('Regression_result.png')
